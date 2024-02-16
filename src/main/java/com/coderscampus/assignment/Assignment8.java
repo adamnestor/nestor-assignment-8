@@ -42,9 +42,7 @@ public class Assignment8 {
 			end = i.addAndGet(1000);
 
 			System.out.println("Starting to fetch records " + start + " to " + (end));
-			////////
-			System.out.println("Current Thread: " + Thread.currentThread().getName());
-			////////
+			
 		}
 		// force thread to pause for half a second to simulate actual Http / API traffic
 		// delay
