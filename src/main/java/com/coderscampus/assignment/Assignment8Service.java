@@ -22,7 +22,7 @@ public class Assignment8Service {
 
 	Assignment8 assignment = new Assignment8();
 
-	public void getAllNumbers() {
+	public void collectAllNumbers() {
 		for (int i = 0; i < numIterations; i++) {
 			CompletableFuture<List<Integer>> futuresList = CompletableFuture.supplyAsync(() -> assignment.getNumbers(),
 					cachedService);
@@ -36,21 +36,20 @@ public class Assignment8Service {
 
 	}
 
-	
 	public void countDistinctNumbers() {
 		combinedList = numbers.stream().map(CompletableFuture::join).flatMap(List::stream).toList();
-		
+
 		for (Integer number : combinedList) {
 			numberCounts.putIfAbsent(number, new AtomicInteger(0));
 			numberCounts.get(number).incrementAndGet();
 		}
 	}
-	
-	
+
 	public void displayDistinctNumbers() {
 		for (int i = 0; i < 15; i++) {
 			Integer count = numberCounts.getOrDefault(i, new AtomicInteger(0)).get();
 			System.out.println(i + "=" + count);
 		}
 	}
+
 }

@@ -1,20 +1,12 @@
 package com.coderscampus.assignment;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
 public class Assignment8Application {
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
+	public static void main(String[] args) {
 
-		Assignment8 assignment = new Assignment8();
+		Assignment8Service a8 = new Assignment8Service();
 
-		CompletableFuture<Map<Integer, Integer>> resultFuture = assignment.countDistinctNumbers();
-
-		Map<Integer, Integer> numberCountMap = resultFuture.join();
-		
-		numberCountMap.forEach((key, value) -> System.out.println(key + "=" + value));
-		
-		assignment.shutdownExecutor();
+		a8.collectAllNumbers();
+		a8.countDistinctNumbers();
+		a8.displayDistinctNumbers();
 	}
 }
