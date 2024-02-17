@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -65,17 +68,39 @@ public class Assignment8 {
 	private int numOfIterations = 1000; // We know that we have 1,000,000 numbers to return but only 1,000 at a time. So
 										// we need 1,000 iterations of the method to return all of the numbers.
 
+	private final ExecutorService executor = Executors.newFixedThreadPool(6);
+	
 	public CompletableFuture<Map<Integer, Integer>> countDistinctNumbers() {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<Integer, Integer> numberCountMap = new HashMap<>();
+			List<CompletableFuture<Void>> futures = new ArrayList<>();
+			
 			for (int i = 0; i < numOfIterations; i++) {
-				List<Integer> numbersList = getNumbers();
-				for (Integer number : numbersList) {
-					numberCountMap.put(number, numberCountMap.getOrDefault(number, 0) + 1);
-				}
+				CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+					List<Integer> numbersList = getNumbers();
+					for (Integer number : numbersList) {
+						numberCountMap.put(number, numberCountMap.getOrDefault(number, 0) + 1);
+					}
+				}, executor);
+				
+				futures.add(future);
+				
 			}
+			
+			CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+			allOf.join();
+			
 			return numberCountMap;
-		});
+		}, executor);
+	}
+	
+	public void shutdownExecutor() {
+		try {
+			executor.shutdown();
+			executor.awaitTermination(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
