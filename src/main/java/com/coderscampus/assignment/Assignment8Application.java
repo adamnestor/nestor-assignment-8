@@ -3,8 +3,6 @@ package com.coderscampus.assignment;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Assignment8Application {
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
@@ -16,7 +14,6 @@ public class Assignment8Application {
 		Map<Integer, Integer> numberCountMap = resultFuture.join();
 		
 		numberCountMap.forEach((key, value) -> System.out.println(key + "=" + value));
-		
 		
 		assignment.shutdownExecutor();
 	}
